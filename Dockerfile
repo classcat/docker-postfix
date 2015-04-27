@@ -12,6 +12,8 @@ ADD assets/cc-init.sh /opt/cc-init.sh
 
 ADD assets/supervisord.conf /etc/supervisor/supervisord.conf
 
+EXPOSE 25 587
+
 CMD /opt/cc-init.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 #ENTRYPOINT ["/opt/startup.sh"]
