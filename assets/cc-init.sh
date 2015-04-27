@@ -18,7 +18,7 @@ function proc_postfix_basic () {
 }
 
 function add_accounts () {
-  echo $smtp_user | tr , \\n > /var/tmp/passwd
+  echo $users | tr , \\n > /var/tmp/passwd
   while IFS=':' read -r _user _id _pwd; do
     useradd -u $_id -p $_pwd -s /sbin/nologin $_user
   done < /var/tmp/passwd
@@ -37,7 +37,7 @@ auxprop_plugin: sasldb
 mech_list: PLAIN LOGIN CRAM-MD5 DIGEST-MD5 NTLM
 EOF
 
-  echo $smtp_user | tr , \\n > /var/tmp/passwd
+  echo $users | tr , \\n > /var/tmp/passwd
   while IFS=':' read -r _user _id _pwd; do
     echo $_pwd | saslpasswd2 -p -c -u $domainname $_user
   done < /var/tmp/passwd
