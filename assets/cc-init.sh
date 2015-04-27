@@ -79,4 +79,6 @@ EOF
 proc_postfix
 proc_supervisor
 
+/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+
 exit 0
