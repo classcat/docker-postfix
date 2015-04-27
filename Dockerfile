@@ -20,6 +20,6 @@ ADD assets/supervisord.conf /etc/supervisor/supervisord.conf
 
 EXPOSE 25 587
 
-CMD /opt/cc-init.sh
-#CMD /opt/cc-init.sh;/usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+#CMD /opt/cc-init.sh
+CMD /opt/cc-init.sh && /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
