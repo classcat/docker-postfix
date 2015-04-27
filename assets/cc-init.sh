@@ -1,16 +1,23 @@
 #!/bin/bash
 
-# masao
+########################################################################
+# ClassCat/Postfix Asset files
+# maintainer: Masashi Okumura < masao@classcat.com >
+########################################################################
+
+## last modified : 28-apr-15 ##
 
 ###############
 ### POSTFIX ###
+###############
+
 function proc_postfix_basic () {
   echo "$domainname" > /etc/mailname
 
   postconf -e myhostname=$hostname
   postconf -e mydestination=$domainname,$hostname,localhost.localdomain,localhost
 
-  # enable a submission port.
+  # enable a submission port. postconf should be used.
   sed -i -e "s/^#submission/submission/" /etc/postfix/master.cf 
 
   # See http://www.postfix.org/wip.html
@@ -18,11 +25,11 @@ function proc_postfix_basic () {
 }
 
 function add_accounts () {
-  echo $users | tr , \\n > /var/tmp/passwd
+  echo $users | tr , \\n > /var/tmp/users
   while IFS=':' read -r _user _id _pwd; do
     useradd -u $_id -p $_pwd -s /sbin/nologin $_user
-  done < /var/tmp/passwd
-  rm /var/tmp/passwd
+  done < /var/tmp/users
+  rm /var/tmp/users
 }
 
 function proc_postfix_smtp_auth () {
@@ -37,10 +44,11 @@ auxprop_plugin: sasldb
 mech_list: PLAIN LOGIN CRAM-MD5 DIGEST-MD5 NTLM
 EOF
 
-  echo $users | tr , \\n > /var/tmp/passwd
+  echo $users | tr , \\n > /var/tmp/users
   while IFS=':' read -r _user _id _pwd; do
     echo $_pwd | saslpasswd2 -p -c -u $domainname $_user
-  done < /var/tmp/passwd
+  done < /var/tmp/users
+  rm /var/tmp/users
 
   chown postfix.sasl /etc/sasldb2
 }
@@ -51,9 +59,12 @@ function proc_postfix () {
   proc_postfix_smtp_auth
 }
 
+
 ##################
 ### SUPERVISOR ###
+##################
 # See http://docs.docker.com/articles/using_supervisord/
+
 function proc_supervisor () {
   cat > /etc/supervisor/conf.d/supervisord.conf <<EOF
 [supervisord]
@@ -68,8 +79,8 @@ EOF
 
   cat >> /opt/cc-postfix.sh <<EOF
 #!/bin/bash
-service postfix start
-tail -f /var/log/mail.log
+/usr/sbin/postfix start
+tail -F /var/log/mail.log
 EOF
 
   chmod +x /opt/cc-postfix.sh
