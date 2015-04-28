@@ -27,7 +27,8 @@ function proc_postfix_basic () {
 function add_accounts () {
   echo $users | tr , \\n > /var/tmp/users
   while IFS=':' read -r _user _id _pwd; do
-    useradd -u $_id -p $_pwd -s /sbin/nologin $_user
+    useradd -u $_id -s /sbin/nologin $_user
+    echo -e "${_pwd}\n${_pwd}" | passwd $_user
   done < /var/tmp/users
   rm /var/tmp/users
 }
