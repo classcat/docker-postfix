@@ -1,6 +1,6 @@
 # Postfix Mail Server
 
-Run postfix with smtp auth and a submission port in a docker container.
+Run postfix with **smtp auth** and a **submission port** in a docker container.
 
 ## Pull Image
 
