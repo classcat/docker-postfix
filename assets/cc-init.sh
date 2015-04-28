@@ -81,6 +81,7 @@ EOF
   cat >> /opt/cc-postfix.sh <<EOF
 #!/bin/bash
 /usr/sbin/postfix start
+pkill tail
 tail -F /var/log/mail.log
 EOF
 
