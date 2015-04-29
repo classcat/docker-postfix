@@ -1,6 +1,6 @@
 # Postfix Mail Server
 
-Run postfix with **smtp auth** and a **submission port** in a docker container.
+Run postfix with **smtp auth**, a **submission port** and **spamassassin** in a docker container.
 
 ## Pull Image
 
@@ -15,7 +15,7 @@ Run postfix with **smtp auth** and a **submission port** in a docker container.
     -e users=(usr0:uid0:pwd0,usr1:uid1:pwd1) \  
     classcat/postfix
 
-example)  
+### example)  
 
     $ sudo docker run -it --name postfix \  
     -p 25:25 -p 587:587 \  
@@ -29,8 +29,6 @@ example)
 ## Variables
 
 ## Known Issues
-
-+ spamassassin should be supported.
 
 ## Reference
 
