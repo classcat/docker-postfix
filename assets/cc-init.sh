@@ -61,6 +61,27 @@ function proc_postfix () {
 }
 
 
+####################
+### SPAMASSASSIN ###
+####################
+
+function proc_spamassassin () {
+  mkdir /var/log/spamassassin
+  chown debian-spamd:debian-spamd /var/log/spamassassin
+
+  #sed -i -e "s/^ENABLED\s*=\s*0/ENABLED=1/" /etc/default/spamassassin
+  #sed -i -e "s/^CRON\s*=\s*0/CRON=1/" /etc/default/spamassassin
+
+  # smtp       inet  n       -       n       -       -       smtpd
+  sed -i -e "s/^smtp\s*inet\s*n\s*\-\s*n\s*\-\s*\-\s*smtpd\s*/smtp       inet  n       -       n       -       -       smtpd -o content_filter=spamassassin/" /etc/postfix/master.cf
+
+
+  echo 'spamassassin unix -     n       n       -       -       pipe' >> /etc/postfix/master.cf
+  echo '    user=debian-spamd argv=/usr/bin/spamc -f -e'            >> /etc/postfix/master.cf
+  echo '    /usr/sbin/sendmail -oi -f ${sender} ${recipient}'       >> /etc/postfix/master.cf
+}
+
+
 ##################
 ### SUPERVISOR ###
 ##################
@@ -71,12 +92,24 @@ function proc_supervisor () {
 [supervisord]
 nodaemon=true
 
+[program:spamassassin]
+command=/opt/cc-spamassassin.sh
+
 [program:postfix]
 command=/opt/cc-postfix.sh
 
 [program:rsyslog]
 command=/usr/sbin/rsyslogd -n -c3
 EOF
+
+  cat >> /opt/cc-spamassassin.sh <<EOF
+#!/bin/bash
+service spamassassin start
+pkill tail
+tail -F /var/log/spamassassin/spamd.log
+EOF
+
+  chmod +x /opt/cc-spamassassin.sh
 
   cat >> /opt/cc-postfix.sh <<EOF
 #!/bin/bash
@@ -90,6 +123,7 @@ EOF
 
 
 proc_postfix
+proc_spamassassin
 proc_supervisor
 
 # /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

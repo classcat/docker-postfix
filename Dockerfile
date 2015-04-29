@@ -18,6 +18,10 @@ ADD assets/cc-init.sh /opt/cc-init.sh
 
 ADD assets/supervisord.conf /etc/supervisor/supervisord.conf
 
+ADD assets/spamassassin /etc/default/spamassassin
+
+ADD assets/local.cf /etc/spamassassin/local.cf
+
 EXPOSE 25 587
 
 CMD /opt/cc-init.sh; /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
