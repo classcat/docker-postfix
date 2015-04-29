@@ -5,7 +5,7 @@
 # maintainer: Masashi Okumura < masao@classcat.com >
 ########################################################################
 
-## last modified : 28-apr-15 ##
+## last modified : 29-apr-15 ##
 
 ###############
 ### POSTFIX ###
@@ -105,7 +105,6 @@ EOF
   cat >> /opt/cc-spamassassin.sh <<EOF
 #!/bin/bash
 service spamassassin start
-pkill tail
 tail -F /var/log/spamassassin/spamd.log
 EOF
 
@@ -114,7 +113,6 @@ EOF
   cat >> /opt/cc-postfix.sh <<EOF
 #!/bin/bash
 /usr/sbin/postfix start
-pkill tail
 tail -F /var/log/mail.log
 EOF
 
