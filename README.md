@@ -8,7 +8,7 @@ Run postfix with **smtp auth**, a **submission port** and **spamassassin** in a 
 
 ## Usage
 
-    $ sudo docker run -it --name (container name) \  
+    $ sudo docker run -d --name (container name) \  
     -p 25:25 -p 587:587 \  
     -v (dir on host):/var/mail \  
     -e hostname=(FQDN of host) -e domainname=(domain name) \  
@@ -17,7 +17,7 @@ Run postfix with **smtp auth**, a **submission port** and **spamassassin** in a 
 
 ### example)  
 
-    $ sudo docker run -it --name postfix \  
+    $ sudo docker run -d --name postfix \  
     -p 25:25 -p 587:587 \  
     -v /mail:/var/mail \  
     -e hostname=mailsvr.classcat.com -e domainname=classcat.com \  
