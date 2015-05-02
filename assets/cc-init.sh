@@ -5,7 +5,9 @@
 # maintainer: Masashi Okumura < masao@classcat.com >
 ########################################################################
 
-## last modified : 29-apr-15 ##
+### HISTORY ###
+# 03-may-15 : Removed the nodaemon steps.
+#
 
 ###############
 ### POSTFIX ###
@@ -88,10 +90,11 @@ function proc_spamassassin () {
 # See http://docs.docker.com/articles/using_supervisord/
 
 function proc_supervisor () {
-  cat > /etc/supervisor/conf.d/supervisord.conf <<EOF
-[supervisord]
-nodaemon=true
+# removed the followings:
+#[supervisord]
+#nodaemon=true
 
+  cat > /etc/supervisor/conf.d/supervisord.conf <<EOF
 [program:spamassassin]
 command=/opt/cc-spamassassin.sh
 
@@ -127,3 +130,6 @@ proc_supervisor
 # /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
 
 exit 0
+
+
+### End of Script ###
