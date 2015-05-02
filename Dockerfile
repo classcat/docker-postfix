@@ -1,5 +1,5 @@
 #FROM ubuntu:trusty
-FROM ubuntu:classcat/ubuntu:trusty
+FROM classcat/ubuntu:trusty
 MAINTAINER Masashi Okumura <masao@classcat.com>
 
 ENV DEBIAN_FRONTEND noninteractive
