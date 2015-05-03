@@ -6,7 +6,7 @@
 ########################################################################
 
 ### HISTORY ###
-# 03-may-15 : Add sshd and handle root password.
+# 03-may-15 : Add sshd and code portion to handle root password.
 # 03-may-15 : Removed the nodaemon steps.
 #
 
