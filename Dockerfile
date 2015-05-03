@@ -15,6 +15,6 @@ ADD assets/spamassassin /etc/default/spamassassin
 
 ADD assets/local.cf /etc/spamassassin/local.cf
 
-EXPOSE 25 587
+EXPOSE 22 25 587
 
 CMD /opt/cc-init.sh; /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
