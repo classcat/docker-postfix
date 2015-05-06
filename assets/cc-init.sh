@@ -7,6 +7,7 @@
 
 #--- HISTORY -----------------------------------------------------------
 # 06-may-15 : fixed.
+# 06-may-15 : Use HOSTNAME, DOMAINNAME and USERS.
 # 03-may-15 : Add sshd and code portion to handle root password.
 # 03-may-15 : Removed the nodaemon steps.
 #-----------------------------------------------------------------------
@@ -53,10 +54,10 @@ function put_public_key() {
 ###############
 
 function proc_postfix_basic () {
-  echo "$domainname" > /etc/mailname
+  echo "${DOMAINNAME}" > /etc/mailname
 
-  postconf -e myhostname=$hostname
-  postconf -e mydestination=$domainname,$hostname,localhost.localdomain,localhost
+  postconf -e myhostname=${HOSTNAME}
+  postconf -e mydestination=${DOMAINNAME},${HOSTNAME},localhost.localdomain,localhost
 
   # enable a submission port. postconf should be used.
   sed -i -e "s/^#submission/submission/" /etc/postfix/master.cf 
@@ -67,7 +68,7 @@ function proc_postfix_basic () {
 
 
 function add_accounts () {
-  echo $users | tr , \\n > /var/tmp/users
+  echo ${USERS} | tr , \\n > /var/tmp/users
   while IFS=':' read -r _user _id _pwd; do
     useradd -u $_id -s /usr/sbin/nologin $_user
     echo -e "${_user}:${_pwd}" | chpasswd
@@ -79,7 +80,7 @@ function add_accounts () {
 
 function proc_postfix_smtp_auth () {
   postconf -e smtpd_sasl_auth_enable=yes
-  postconf -e smtpd_sasl_local_domain=$domainname
+  postconf -e smtpd_sasl_local_domain=${DOMAINNAME}
   postconf -e broken_sasl_auth_clients=yes
   postconf -e smtpd_recipient_restrictions=permit_mynetworks,permit_sasl_authenticated,reject_unauth_destination
 
@@ -89,9 +90,9 @@ auxprop_plugin: sasldb
 mech_list: PLAIN LOGIN CRAM-MD5 DIGEST-MD5 NTLM
 EOF
 
-  echo $users | tr , \\n > /var/tmp/users
+  echo ${USERS} | tr , \\n > /var/tmp/users
   while IFS=':' read -r _user _id _pwd; do
-    echo $_pwd | saslpasswd2 -p -c -u $domainname $_user
+    echo $_pwd | saslpasswd2 -p -c -u ${DOMAINNAME} $_user
   done < /var/tmp/users
   rm /var/tmp/users
 
